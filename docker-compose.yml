@@ -1,0 +1,29 @@
+version: "3"
+services:
+    db:
+        image: postgres:13
+        command: [ "postgres", "-c", "log_statement=all", "-c", "log_destination=stderr" ]
+        environment:
+            POSTGRES_DB: "analytics"
+            POSTGRES_USER: "analytics"
+            POSTGRES_PASSWORD: "analytics"
+        ports:
+            - "5425:5432"
+    clickhouse:
+        image: yandex/clickhouse-server
+        env_file:
+            - .env
+        ports:
+            - "8123:8123"
+            - "9000:9000"
+            - "9009:9009"
+    rabbit:
+        image: rabbitmq:3.7-management
+        environment:
+            - "RABBITMQ_DEFAULT_USER=analytics"
+            - "RABBITMQ_DEFAULT_PASS=analytics"
+            - "RABBITMQ_DEFAULT_VHOST=/"
+        ports:
+            - "5621:5672"
+
+
